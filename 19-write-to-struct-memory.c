@@ -27,18 +27,6 @@ struct cargo_port_hub {
     unsigned screamingSecondaryFire: 1;
     unsigned armDelay: 16;
     unsigned perimeterArmDelay: 16;
-    unsigned autoBypassTimer: 8;
-    unsigned autoBypassCounter: 8;
-    unsigned twoStageArming: 1;
-    unsigned twoStageArmingStatus: 4;
-    unsigned interconnectDelayTimeout: 10;
-    unsigned interconnectState: 2;
-    unsigned alarmHappened: 5;
-    unsigned postAlarmIndicationRules: 3;
-    unsigned disarmingByKeypad: 1;
-    unsigned restoreRequired: 5;
-    unsigned reportAlarmRestore: 1;
-    unsigned interconnectModes: 8;
 }  __attribute__((packed));
 
 int main() {
@@ -70,12 +58,32 @@ int main() {
     struct cargo_port_hub *pPortHub = &portHub;
     printf("%p %ld\n", pPortHub, sizeof(pPortHub));
     char *ppH = (char *) pPortHub;
-    printf("%p %ld\n", p, sizeof(p));
+    printf("%p %ld\n", ppH, sizeof(ppH));
 
     portHub = (struct cargo_port_hub) {
             61,
             208100,
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            36,
+            8,
+            0,
+            1,
+            0,
+            0,
+            0,
     };
+    for (int i = 0; i < 16; ++i) {
+        printf("%02x \n", *(ppH + i));
+    }
 //    printf("%d %d\n", c.a, c.b);
 //    for (int i = 0; i < 8; ++i) {
 //        printf("%d", *(p + i));
