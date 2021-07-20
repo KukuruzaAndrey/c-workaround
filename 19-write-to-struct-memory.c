@@ -7,9 +7,21 @@ struct st {
     int b;
 };
 
+void printbin(char *c) {
+    char bits[8];
+    unsigned char value = *c;
+
+    for (int i = 7; i >= 0; i -= 1) {
+        bits[i] = '0' + (value & 0x01);
+        value >>= 1;
+    }
+//    puts(bits);
+    printf("%s ", bits);
+}
+
 struct cargo_port_hub {
-    uint32_t objectId;
-    uint32_t firmWareVersion;
+//    uint32_t objectId;
+//    uint32_t firmWareVersion;
     unsigned state: 2;
     unsigned hubFireDobleImpulses: 1;
     unsigned armPreventionMode: 2;
@@ -61,8 +73,8 @@ int main() {
     printf("%p %ld\n", ppH, sizeof(ppH));
 
     portHub = (struct cargo_port_hub) {
-            61,
-            208100,
+//            61,
+//            208100,
             1,
             0,
             0,
@@ -76,13 +88,14 @@ int main() {
             36,
             8,
             0,
-            1,
+            0,
             0,
             0,
             0,
     };
     for (int i = 0; i < 16; ++i) {
-        printf("%02x \n", *(ppH + i));
+//        printf("%02x \n", *(ppH + i));
+        printbin(ppH + i);
     }
 //    printf("%d %d\n", c.a, c.b);
 //    for (int i = 0; i < 8; ++i) {
