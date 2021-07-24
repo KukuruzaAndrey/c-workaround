@@ -7,6 +7,9 @@ struct st {
     int b;
 };
 
+// 1E5D0009D33E000338A52018090002400000000000008107C0020000
+char hub_port_mem[] = "0009D33E000338A52018090002400000000000008107C0020000";
+
 void printbin(char *c) {
     char bits[8];
     unsigned char value = *c;
@@ -20,8 +23,9 @@ void printbin(char *c) {
 }
 
 struct cargo_port_hub {
-//    uint32_t objectId;
-//    uint32_t firmWareVersion;
+    uint32_t objectId;
+    uint32_t firmWareVersion;
+// 10 bytes
     unsigned state: 2;
     unsigned hubFireDobleImpulses: 1;
     unsigned armPreventionMode: 2;
@@ -39,7 +43,53 @@ struct cargo_port_hub {
     unsigned screamingSecondaryFire: 1;
     unsigned armDelay: 16;
     unsigned perimeterArmDelay: 16;
+    unsigned autoBypassTimer: 8;
+    unsigned autoBypassCounter: 8;
+    unsigned twoStageArming: 1;
+    unsigned twoStageArmingStatus: 4;
+    unsigned interconnectDelayTimeout: 10;
+    unsigned interconnectState: 2;
+    unsigned alarmHappened: 5;
+    unsigned postAlarmIndicationRules: 3;
+    unsigned disarmingByKeypad: 1;
+    unsigned restoreRequired: 5;
+    unsigned reportAlarmRestore: 1;
+    unsigned interconnectModes: 8;
 }  __attribute__((packed));
+
+void print_cargo_port_hub(struct cargo_port_hub *cargoPortHub) {
+    printf("hub.objectId: %d\n", cargoPortHub->objectId);
+    printf("hub.firmWareVersion: %d\n", cargoPortHub->firmWareVersion);
+    printf("hub.state: %d\n", cargoPortHub->state);
+    printf("hub.hubFireDobleImpulses: %d\n", cargoPortHub->hubFireDobleImpulses);
+    printf("hub.armPreventionMode: %d\n", cargoPortHub->armPreventionMode);
+    printf("hub.groupsEnabled: %d\n", cargoPortHub->groupsEnabled);
+    printf("hub.hubStateWithGroups: %d\n", cargoPortHub->hubStateWithGroups);
+    printf("hub.panicSirenTurnOn: %d\n", cargoPortHub->panicSirenTurnOn);
+    printf("hub.tamperAsAlarms: %d\n", cargoPortHub->tamperAsAlarms);
+    printf("hub.fullArmProblem: %d\n", cargoPortHub->fullArmProblem);
+    printf("hub.perimeterArmProblem: %d\n", cargoPortHub->perimeterArmProblem);
+    printf("hub.blockedByServiceProvider: %d\n", cargoPortHub->blockedByServiceProvider);
+    printf("hub.frameLength: %d\n", cargoPortHub->frameLength);
+    printf("hub.lostDeviceCounter: %d\n", cargoPortHub->lostDeviceCounter);
+    printf("hub.alarmHubBits: %d\n", cargoPortHub->alarmHubBits);
+    printf("hub.fireInterconnected: %d\n", cargoPortHub->fireInterconnected);
+    printf("hub.screamingSecondaryFire: %d\n", cargoPortHub->screamingSecondaryFire);
+    printf("hub.armDelay: %d\n", cargoPortHub->armDelay);
+    printf("hub.perimeterArmDelay: %d\n", cargoPortHub->perimeterArmDelay);
+    printf("hub.autoBypassTimer: %d\n", cargoPortHub->autoBypassTimer);
+    printf("hub.autoBypassCounter: %d\n", cargoPortHub->autoBypassCounter);
+    printf("hub.twoStageArming: %d\n", cargoPortHub->twoStageArming);
+    printf("hub.twoStageArmingStatus: %d\n", cargoPortHub->twoStageArmingStatus);
+    printf("hub.interconnectDelayTimeout: %d\n", cargoPortHub->interconnectDelayTimeout);
+    printf("hub.interconnectState: %d\n", cargoPortHub->interconnectState);
+    printf("hub.alarmHappened: %d\n", cargoPortHub->alarmHappened);
+    printf("hub.postAlarmIndicationRules: %d\n", cargoPortHub->postAlarmIndicationRules);
+    printf("hub.disarmingByKeypad: %d\n", cargoPortHub->disarmingByKeypad);
+    printf("hub.restoreRequired: %d\n", cargoPortHub->restoreRequired);
+    printf("hub.reportAlarmRestore: %d\n", cargoPortHub->reportAlarmRestore);
+    printf("hub.interconnectModes: %d\n", cargoPortHub->interconnectModes);
+}
 
 int main() {
     struct st c;
@@ -73,8 +123,8 @@ int main() {
     printf("%p %ld\n", ppH, sizeof(ppH));
 
     portHub = (struct cargo_port_hub) {
-//            61,
-//            208100,
+            61,
+            208100,
             1,
             0,
             0,
@@ -92,11 +142,34 @@ int main() {
             0,
             0,
             0,
+            1,
+            2,
+            0,
+            0,
+            10,
+            0,
+            1,
+            0,
+            0,
+            5,
+            0,
+            4
     };
-    for (int i = 0; i < 16; ++i) {
+    for (int i = 0; i < 18; ++i) {
 //        printf("%02x \n", *(ppH + i));
         printbin(ppH + i);
     }
+    printf("\n");
+    for (int i = 0; i < 18; ++i) {
+        printf("%02x ", *(ppH + i));
+//        printbin(ppH + i);
+    }
+    printf("\n");
+    print_cargo_port_hub(pPortHub);
+    printf("===========================\n");
+    memcpy(ppH, hub_port_mem, 26);
+    print_cargo_port_hub(pPortHub);
+
 //    printf("%d %d\n", c.a, c.b);
 //    for (int i = 0; i < 8; ++i) {
 //        printf("%d", *(p + i));
@@ -111,4 +184,5 @@ int main() {
 //    for (int i = 0; i < 8; ++i) {
 //        printf("%d\n", *(p + i));
 //    }
+    printf("\n");
 }
