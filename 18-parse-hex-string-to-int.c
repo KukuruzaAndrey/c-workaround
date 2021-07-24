@@ -5,8 +5,9 @@
 //uint8_t hex2int(char *hex);
 void hextobin(const char * str, uint8_t * bytes, size_t blen);
 
+
 int main() {
-  char hexstr[] = "1F";
+  //char hexstr[] = "1F";
   //uint8_t hex = hex2int(hexstr);
   //char *p;
   //printf("%x - %s\n", hex, hexstr);

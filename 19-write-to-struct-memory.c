@@ -1,14 +1,31 @@
 #include "stdio.h"
 #include "stdint.h"
 #include "string.h"
+#include "stdlib.h"
 
-struct st {
-    int a;
-    int b;
-};
+// Based on https://stackoverflow.com/a/23898449/266720
+void hextobin(const char * str, uint8_t * bytes, size_t blen){
+   uint8_t  pos;
+   uint8_t  idx0;
+   uint8_t  idx1;
 
-// 1E5D0009D33E000338A52018090002400000000000008107C0020000
-char hub_port_mem[] = "0009D33E000338A52018090002400000000000008107C0020000";
+   // mapping of ASCII characters to hex values
+   const uint8_t hashmap[] =
+   {
+     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, //>
+     0x08, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //>
+     0x00, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x00, //>
+     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //>
+   };
+
+   memset(bytes, 0, blen);
+   for (pos = 0; ((pos < (blen*2)) && (pos < strlen(str))); pos += 2)
+   {
+      idx0 = ((uint8_t)str[pos+0] & 0x1F) ^ 0x10;
+      idx1 = ((uint8_t)str[pos+1] & 0x1F) ^ 0x10;
+      bytes[pos/2] = (uint8_t)(hashmap[idx0] << 4) | hashmap[idx1];
+   };
+}
 
 void printbin(char *c) {
     char bits[8];
@@ -92,7 +109,7 @@ void print_cargo_port_hub(struct cargo_port_hub *cargoPortHub) {
 }
 
 int main() {
-    struct st c;
+/*    struct st c;
     struct st *pointer = &c;
     printf("%p %ld\n", pointer, sizeof(pointer));
     char *p = (char *) pointer;
@@ -112,7 +129,7 @@ int main() {
     printf("%d %d\n", c.a, c.b);
     for (int i = 0; i < 8; ++i) {
         printf("%d\n", *(p + i));
-    }
+    } */
 
     printf("====================\n");
 
@@ -167,8 +184,14 @@ int main() {
     printf("\n");
     print_cargo_port_hub(pPortHub);
     printf("===========================\n");
-    memcpy(ppH, hub_port_mem, 26);
-    print_cargo_port_hub(pPortHub);
+    // 1E5D0009D33E000338A52018090002400000000000008107C0020000
+    char hub_port_mem[] = "0009D33E000338A52018090002400000000000008107C0020000";
+    int bytes = strlen(hub_port_mem)/2;
+    uint8_t * mem = (uint8_t*)malloc(bytes * sizeof(uint8_t));
+    hextobin(hub_port_mem, mem, bytes);
+
+    memcpy(ppH, mem, 26);
+    print_cargo_port_hub(mem);
 
 //    printf("%d %d\n", c.a, c.b);
 //    for (int i = 0; i < 8; ++i) {
