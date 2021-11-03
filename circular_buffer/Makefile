@@ -27,7 +27,7 @@ TGT = $(PATHB)test$(TARGET_EXTENSION)
 
 #Tool Definitions
 CC=gcc
-CFLAGS=-I. -I$(PATHU) -I$(PATHS) -DTEST -ggdb3
+CFLAGS=-I. -I$(PATHU) -I$(PATHS) -DTEST -fsanitize=address -ggdb3
 
 test: $(PATHB) $(TGT)
 	./$(TGT)
@@ -42,7 +42,7 @@ $(PATHB)%.o:: $(PATHU)%.c $(DEP)
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(TGT): $(OBJ)
-	gcc -o $@ $^
+	gcc -fsanitize=address -o $@ $^
 
 clean:
 	$(CLEANUP) $(PATHB)*.o
