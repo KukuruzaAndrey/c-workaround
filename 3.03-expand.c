@@ -20,6 +20,8 @@ void expand(char *s1, char *s2) {
                 s2[i + 2] - s2[i] > 0 ?
                 putRange(s2[i], s2[i + 2], s1) :
                 putRange(s2[i + 2], s2[i], s1)
+                i+=3;
+                continue;
             }
         }
         i++;
