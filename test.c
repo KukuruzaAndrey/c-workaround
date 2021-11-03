@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ctype.h>
 
 int main()
 {
@@ -46,5 +47,7 @@ int main()
     a = *(int*)&ab7;
     printf("ab7 is %x \n",a);
 
+    printf("%d\n", isdigit('a'));
+    printf("%d\n", isdigit('0'));
     return 0;
 }
