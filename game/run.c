@@ -14,7 +14,11 @@ struct pos {
 struct termios term;
 void on();
 void off();
-
+void left();
+void up();
+void right();
+void down();
+struct pos pl;
 int main() {
   ioctl(0, TIOCGWINSZ, &w);
   int tw = w.ws_col;
@@ -22,12 +26,33 @@ int main() {
 
   tcgetattr(fileno(stdin), &term);
 
-  int c;
+  int c, c1, c2;
   off();
+  struct pos pl = {.x = 5, .y = 10};
   while((c=getchar())!=EOF) {
-  if (c == 0) {
-    char c1 = getchar();
-    printf("\n\n%d", c1+255);
+render(tw, th);
+  if (c == 27) {
+    c1 = getchar();
+    if (c1 == '[') {
+      c2 = getchar();
+      switch (c2) {
+        case 'D': 
+          left();
+          break;
+        case 'A': 
+          up();
+          break;
+        case 'C': 
+          right();
+          break;
+        case 'B': 
+          down();
+          break;
+        default:
+          break;
+      }
+      
+    }
   } else
 printf("%d",c);    
 //putchar(c);
@@ -56,5 +81,24 @@ void on() {
 void off() {
     term.c_lflag &= ~ECHO;
     tcsetattr(fileno(stdin), 0, &term);
+}
+
+
+void left() {
+  printf("left");
+  pl.x-=1;
+}
+void up() {
+  printf("up");
+pl.y+=1;
+}
+void right()  {
+
+pl.x+=1;
+  printf("right");
+}
+void down()  {
+  printf("down");
+pl.y-=1;
 }
 
