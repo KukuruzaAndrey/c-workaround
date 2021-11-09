@@ -29,42 +29,42 @@ int main() {
   int c, c1, c2;
   off();
   struct pos pl = {.x = 5, .y = 10};
-  while((c=getchar())!=EOF) {
-render(tw, th);
-  if (c == 27) {
-    c1 = getchar();
-    if (c1 == '[') {
-      c2 = getchar();
-      switch (c2) {
-        case 'D': 
-          left();
-          break;
-        case 'A': 
-          up();
-          break;
-        case 'C': 
-          right();
-          break;
-        case 'B': 
-          down();
-          break;
-        default:
-          break;
+  while((c=getc(stdin))!=EOF) {
+    render(tw, th);
+    if (c == 27) {
+      c1 = getchar();
+      if (c1 == '[') {
+        c2 = getchar();
+        switch (c2) {
+          case 'D': 
+            left();
+            break;
+          case 'A': 
+            up();
+            break;
+          case 'C': 
+            right();
+            break;
+          case 'B': 
+            down();
+            break;
+          default:
+            break;
+        }
       }
-      
     }
-  } else
-printf("%d",c);    
+
+//printf("%d",c);    
 //putchar(c);
-  };  
+  }  
   on();
-  render(tw, th);
+  //render(tw, th);
 }
 
 void render(int tw, int th) {
   for (int y = 0; y < th; y++) {
     for (int x = 0; x < tw; x++) {
-      if (x == 5 && y == 10) putchar('@');
+      if (x == pl.x && y == pl.y) putchar('@');
       else 
       putchar(' ');
     }
@@ -97,6 +97,7 @@ void right()  {
 pl.x+=1;
   printf("right");
 }
+
 void down()  {
   printf("down");
 pl.y-=1;
