@@ -2,8 +2,9 @@
 
 int main() {
   printf("hex numbers from 0 to 100\n");
-  for(int i=0;i<101;i++){
-    printf("%03d - %05x\n", i, i);
+  for(int i=0;i<255;i++){
+    //printf("%03d - %05x\n", i, i);
+    printf("%c\n", i);
   }
   printf("\nnumbers while cube of number less 1000\n");
   int i = 0;
