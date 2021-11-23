@@ -1,10 +1,10 @@
-all: kilo r c
+all: kilo run
 
 kilo: kilo.c
 	$(CC) kilo.c -o kilo -Wall -Wextra -pedantic -std=c17
 
-r: kilo
+run: kilo
 	./kilo
 
-c:
+clean:
 	rm -f kilo

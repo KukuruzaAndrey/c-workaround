@@ -23,41 +23,76 @@ void enableRawMode() {
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 }
 
-void render();
+int getWindowSize(struct winsize *ws) {
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, ws) == -1 || ws->ws_col == 0) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
 
-// detect terminal width
-struct winsize w;
-//printf("%d\n", w.ws_col);
+struct winsize ws;
 struct pos {
     unsigned x;
     unsigned y;
 };
-struct termios term;
-
-void on();
-
-void off();
-
-void left();
-
-void up();
-
-void right();
-
-void down();
-
 struct pos pl;
+
+
+void render() {
+    for (unsigned y = 0; y < ws.ws_row; y++) {
+        for (unsigned x = 0; x < ws.ws_col; x++) {
+            if (x == pl.x && y == pl.y) putchar('@');
+            else
+                putchar(' ');
+        }
+        putchar('\r');
+        putchar('\n');
+    }
+}
+
+
+void left() {
+//    printf("left");
+    pl.x -= 1;
+}
+
+void up() {
+//    printf("up");
+    pl.y -= 1;
+}
+
+void right() {
+    pl.x += 1;
+//    printf("right");
+}
+
+void down() {
+//    printf("down");
+    pl.y += 1;
+}
+
+char editorReadKey() {
+    int nread;
+    char c;
+    while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
+        if (nread == -1 && errno != EAGAIN) die("read");
+    }
+    return c;
+}
+
+void editorProcessKeypress() {
+    char c = editorReadKey();
+    switch (c) {
+        case CTRL_KEY('q'):
+            exit(0);
+            break;
+    }
+}
 
 int main() {
     enableRawMode();
-    ioctl(0, TIOCGWINSZ, &w);
-    int tw = w.ws_col;
-    int th = w.ws_row;
-
-    //tcgetattr(fileno(stdin), &term);
-
-//    int c, c1, c2;
-    struct pos pl = {.x = 5, .y = 10};
+    getWindowSize(&ws);
 
     char c;
     while (1) {
@@ -90,39 +125,6 @@ int main() {
 //        return c;
         }
 
-        render(tw, th);
+        render();
     }
-}
-
-void render(int tw, int th) {
-    for (int y = 0; y < th; y++) {
-        for (int x = 0; x < tw; x++) {
-            if (x == pl.x && y == pl.y) putchar('@');
-            else
-                putchar(' ');
-        }
-        putchar('\r');
-        putchar('\n');
-    }
-}
-
-
-void left() {
-//    printf("left");
-    pl.x -= 1;
-}
-
-void up() {
-//    printf("up");
-    pl.y -= 1;
-}
-
-void right() {
-    pl.x += 1;
-//    printf("right");
-}
-
-void down() {
-//    printf("down");
-    pl.y += 1;
 }
