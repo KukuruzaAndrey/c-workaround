@@ -1,0 +1,20 @@
+#include "Core.h"
+#include "unity.h"
+#include "LED.h"
+
+void test_LED_Init_Should_TurnOnAllLED(void) {
+    LED_PINSEL = 0xFFFFFFFF;
+    LED_PINMODE = 0xFFFFFFFF;
+    LED_PORT->FIODIR = 0;
+    LED_PORT->FIOSET = 0;
+
+    LED_Init();
+
+    TEST_ASSERT_EQUAL_HEX(0xFFFF30CF, LED_PINSEL);
+    TEST_ASSERT_EQUAL_HEX(0xFFFF30CF, LED_PINMODE);
+    TEST_ASSERT_EQUAL_HEX(0x00B40000, LED_PORT->FIODIR);
+    TEST_ASSERT_EQUAL_HEX(0x00B40000, LED_PORT->FIOSET);
+
+
+
+}
